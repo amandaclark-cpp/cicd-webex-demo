@@ -53,7 +53,7 @@ pipeline {
   post {
     success {
       sh '''
-        curl -sS -X POST "https://webexapis.com/v1/messages" \
+        curl -S -X POST "https://webexapis.com/v1/messages" \
           -H "Authorization: Bearer ${WEBEX_TOKEN}" \
           -H "Content-Type: application/json" \
           -d @- <<'JSON'
@@ -66,7 +66,7 @@ JSON
     }
     failure {
       sh '''
-        curl -sS -X POST "https://webexapis.com/v1/messages" \
+        curl -S -X POST "https://webexapis.com/v1/messages" \
           -H "Authorization: Bearer ${WEBEX_TOKEN}" \
           -H "Content-Type: application/json" \
           -d @- <<'JSON'
