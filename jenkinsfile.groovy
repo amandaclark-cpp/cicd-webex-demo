@@ -6,13 +6,20 @@ pipeline {
     WEBEX_ROOM  = credentials('WEBEX_ROOM_ID')
   }
 
-  options { timestamps() }
+  options {
+    timestamps()
+  }
 
-  triggers { githubPush() }
+  triggers {
+    githubPush()
+  }
 
   stages {
     stage('Checkout Code') {
-      steps { checkout scm }
+      steps {
+        // Use SCM config from the job
+        checkout scm
+      }
     }
 
     stage('System Prep (Python)') {
@@ -24,16 +31,22 @@ pipeline {
             DEBIAN_FRONTEND=noninteractive apt-get install -y python3 python3-pip curl
           fi
           python3 -m pip install --upgrade pip
+          pip3 install pytest pycodestyle
+          chmod +x build.sh test.sh
         '''
       }
     }
 
     stage('Build') {
-      steps { sh './build.sh' }
+      steps {
+        sh './build.sh'
+      }
     }
 
     stage('Test') {
-      steps { sh './test.sh' }
+      steps {
+        sh './test.sh'
+      }
     }
   }
 
@@ -44,7 +57,10 @@ pipeline {
           -H "Authorization: Bearer ${WEBEX_TOKEN}" \
           -H "Content-Type: application/json" \
           -d @- <<'JSON'
-        {"roomId":"${WEBEX_ROOM}","markdown":"**✅ Jenkins Build Succeeded**: ${JOB_NAME} #${BUILD_NUMBER}\\nCommit: ${GIT_COMMIT}\\n<${BUILD_URL}|Open in Jenkins>"}
+        {
+          "roomId": "${WEBEX_ROOM}",
+          "markdown": "**Jenkins Build Succeeded**: ${JOB_NAME} #${BUILD_NUMBER}\\nCommit: ${GIT_COMMIT}\\n<${BUILD_URL}|Open in Jenkins>"
+        }
 JSON
       '''
     }
@@ -54,10 +70,12 @@ JSON
           -H "Authorization: Bearer ${WEBEX_TOKEN}" \
           -H "Content-Type: application/json" \
           -d @- <<'JSON'
-        {"roomId":"${WEBEX_ROOM}","markdown":"**❌ Jenkins Build Failed**: ${JOB_NAME} #${BUILD_NUMBER}\\nCommit: ${GIT_COMMIT}\\n<${BUILD_URL}|Open in Jenkins>"}
+        {
+          "roomId": "${WEBEX_ROOM}",
+          "markdown": "**Jenkins Build Failed**: ${JOB_NAME} #${BUILD_NUMBER}\\nCommit: ${GIT_COMMIT}\\n<${BUILD_URL}|Open in Jenkins>"
+        }
 JSON
       '''
     }
   }
 }
-
