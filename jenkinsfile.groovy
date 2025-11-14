@@ -14,8 +14,7 @@ pipeline {
 
     stage('Checkout Code') {
       steps {
-        // Uses the same repo/branch the job is configured with
-        checkout scm
+        // Uses the same repo/branch the job is configured with checkout scm
       }
     }
 
