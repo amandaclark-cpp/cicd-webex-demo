@@ -90,7 +90,7 @@ JSON
           -H "Content-Type: application/json" \
           -d @- <<'JSON'
         {
-          "roomId": "YY2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vZDk0OTA0OTAtYzAzYi0xMWYwLWFlZTMtNTNmNWQxYTQ5NGI5",
+          "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vZDk0OTA0OTAtYzAzYi0xMWYwLWFlZTMtNTNmNWQxYTQ5NGI5",
           "text": "❌ Jenkins build FAILED for cicd-webex-demo."
         }
 JSON
