@@ -21,8 +21,13 @@ pipeline {
       sh '''
         set -eux
         python3 --version
+
+        #Create and use a virtual environment in the workspace
+        python3 -m venv venv
+        
         python3 -m pip install --upgrade pip
         pip3 install pytest pycodestyle
+        
         chmod +x build.sh test.sh
       '''
     }
@@ -37,7 +42,11 @@ pipeline {
 
     stage('Test') {
       steps {
-        sh './test.sh'
+        sh '''
+          set -eux
+          . venv/bin/activate
+          ./test.sh
+        '''
       }
     }
   }
