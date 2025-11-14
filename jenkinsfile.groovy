@@ -54,8 +54,8 @@ pipeline {
   post {
     success {
       withCredentials([
-        string(credentialsId: 'WEBEX_BOT_TOKEN', variable: 'WEBEX_TOKEN'),
-        string(credentialsId: 'WEBEX_ROOM_ID', variable: 'WEBEX_ROOM')
+        string(credentialsId: 'WEBEX_BOT_TOKEN1', variable: 'WEBEX_TOKEN'),
+        string(credentialsId: 'WEBEX_ROOM_ID1', variable: 'WEBEX_ROOM')
       ]) {
         sh '''
           curl -sS -X POST "https://webexapis.com/v1/messages" \
