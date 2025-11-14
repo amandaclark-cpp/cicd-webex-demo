@@ -53,17 +53,14 @@ pipeline {
 
   post {
     success {
-      withCredentials([
-        string(credentialsId: 'WEBEX_BOT_TOKEN1', variable: 'WEBEX_TOKEN'),
-        string(credentialsId: 'WEBEX_ROOM_ID1', variable: 'WEBEX_ROOM')
-      ]) {
+      //Temp: hard-code values for this assignment
         sh '''
           curl -sS -X POST "https://webexapis.com/v1/messages" \
-            -H "Authorization: Bearer ${WEBEX_TOKEN}" \
+            -H "Authorization: Bearer ZmI5MmZjYmUtNDk4NS00MGY4LWE1YzYtOWI0MTQwMWM4ZmEyZDdjNzE1MDEtNjMx_P0A1_13494cac-24b4-4f89-8247-193cc92a7636" \
             -H "Content-Type: application/json" \
             -d @- <<'JSON'
           {
-            "roomId": "${WEBEX_ROOM}",
+            "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vZDk0OTA0OTAtYzAzYi0xMWYwLWFlZTMtNTNmNWQxYTQ5NGI5",
             "markdown": "**Jenkins Build Succeeded**: ${JOB_NAME} #${BUILD_NUMBER}\\nCommit: ${GIT_COMMIT}\\n<${BUILD_URL}|Open in Jenkins>"
           }
 JSON
@@ -71,17 +68,13 @@ JSON
       }
     }
     failure {
-      withCredentials([
-        string(credentialsId: 'WEBEX_BOT_TOKEN', variable: 'WEBEX_TOKEN'),
-        string(credentialsId: 'WEBEX_ROOM_ID', variable: 'WEBEX_ROOM')
-      ]) {
         sh '''
           curl -sS -X POST "https://webexapis.com/v1/messages" \
-            -H "Authorization: Bearer ${WEBEX_TOKEN}" \
+            -H "Authorization: Bearer ZmI5MmZjYmUtNDk4NS00MGY4LWE1YzYtOWI0MTQwMWM4ZmEyZDdjNzE1MDEtNjMx_P0A1_13494cac-24b4-4f89-8247-193cc92a7636" \
             -H "Content-Type: application/json" \
             -d @- <<'JSON'
           {
-            "roomId": "${WEBEX_ROOM}",
+            "roomId": "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vZDk0OTA0OTAtYzAzYi0xMWYwLWFlZTMtNTNmNWQxYTQ5NGI5",
             "markdown": "**Jenkins Build Failed**: ${JOB_NAME} #${BUILD_NUMBER}\\nCommit: ${GIT_COMMIT}\\n<${BUILD_URL}|Open in Jenkins>"
           }
 JSON
