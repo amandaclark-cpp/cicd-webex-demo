@@ -66,7 +66,6 @@ pipeline {
 JSON
         '''
       }
-    }
     failure {
         sh '''
           curl -sS -X POST "https://webexapis.com/v1/messages" \
@@ -81,6 +80,4 @@ JSON
         '''
       }
     }
-  }
 }
-
