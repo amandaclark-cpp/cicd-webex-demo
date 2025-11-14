@@ -16,20 +16,18 @@ pipeline {
       }
     }
 
-    stage('System Prep (Python)') {
-      steps {
-        sh '''
-          set -eux
-          if ! command -v python3 >/dev/null; then
-            apt-get update
-            DEBIAN_FRONTEND=noninteractive apt-get install -y python3 python3-pip curl
-          fi
-          python3 -m pip install --upgrade pip
-          pip3 install pytest pycodestyle
-          chmod +x build.sh test.sh
-        '''
-      }
+  stage('System Prep (Python)') {
+    steps {
+      sh '''
+        set -eux
+        python3 --version
+        python3 -m pip install --upgrade pip
+        pip3 install pytest pycodestyle
+        chmod +x build.sh test.sh
+      '''
     }
+  }
+
 
     stage('Build') {
       steps {
