@@ -1,11 +1,6 @@
 pipeline {
   agent any
 
-  environment {
-    WEBEX_TOKEN = credentials('WEBEX_BOT_TOKEN')
-    WEBEX_ROOM  = credentials('WEBEX_ROOM_ID')
-  }
-
   options {
     timestamps()
   }
@@ -17,7 +12,6 @@ pipeline {
   stages {
     stage('Checkout Code') {
       steps {
-        // Use SCM config from the job
         checkout scm
       }
     }
@@ -52,30 +46,41 @@ pipeline {
 
   post {
     success {
-      sh '''
-        curl -S -X POST "https://webexapis.com/v1/messages" \
-          -H "Authorization: Bearer ${WEBEX_TOKEN}" \
-          -H "Content-Type: application/json" \
-          -d @- <<'JSON'
-        {
-          "roomId": "${WEBEX_ROOM}",
-          "markdown": "**Jenkins Build Succeeded**: ${JOB_NAME} #${BUILD_NUMBER}\\nCommit: ${GIT_COMMIT}\\n<${BUILD_URL}|Open in Jenkins>"
-        }
+      withCredentials([
+        string(credentialsId: 'WEBEX_BOT_TOKEN', variable: 'WEBEX_TOKEN'),
+        string(credentialsId: 'WEBEX_ROOM_ID', variable: 'WEBEX_ROOM')
+      ]) {
+        sh '''
+          curl -sS -X POST "https://webexapis.com/v1/messages" \
+            -H "Authorization: Bearer ${WEBEX_TOKEN}" \
+            -H "Content-Type: application/json" \
+            -d @- <<'JSON'
+          {
+            "roomId": "${WEBEX_ROOM}",
+            "markdown": "**Jenkins Build Succeeded**: ${JOB_NAME} #${BUILD_NUMBER}\\nCommit: ${GIT_COMMIT}\\n<${BUILD_URL}|Open in Jenkins>"
+          }
 JSON
-      '''
+        '''
+      }
     }
     failure {
-      sh '''
-        curl -S -X POST "https://webexapis.com/v1/messages" \
-          -H "Authorization: Bearer ${WEBEX_TOKEN}" \
-          -H "Content-Type: application/json" \
-          -d @- <<'JSON'
-        {
-          "roomId": "${WEBEX_ROOM}",
-          "markdown": "**Jenkins Build Failed**: ${JOB_NAME} #${BUILD_NUMBER}\\nCommit: ${GIT_COMMIT}\\n<${BUILD_URL}|Open in Jenkins>"
-        }
+      withCredentials([
+        string(credentialsId: 'WEBEX_BOT_TOKEN', variable: 'WEBEX_TOKEN'),
+        string(credentialsId: 'WEBEX_ROOM_ID', variable: 'WEBEX_ROOM')
+      ]) {
+        sh '''
+          curl -sS -X POST "https://webexapis.com/v1/messages" \
+            -H "Authorization: Bearer ${WEBEX_TOKEN}" \
+            -H "Content-Type: application/json" \
+            -d @- <<'JSON'
+          {
+            "roomId": "${WEBEX_ROOM}",
+            "markdown": "**Jenkins Build Failed**: ${JOB_NAME} #${BUILD_NUMBER}\\nCommit: ${GIT_COMMIT}\\n<${BUILD_URL}|Open in Jenkins>"
+          }
 JSON
-      '''
+        '''
+      }
     }
   }
 }
+
